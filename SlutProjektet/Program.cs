@@ -1,5 +1,7 @@
 ﻿global using Raylib_cs;
 global using System.Numerics;
+global using System.IO;
+global using System.Text.Json;
 
 Raylib.InitWindow(960, 960, "Världens sämsta spel");
 Raylib.SetTargetFPS(60);
@@ -8,19 +10,19 @@ Map map = new Map();
 Controller controller = new Controller();
 Player p = new Player();
 
-//Creates a list of enemies and adds one to start
-List<Enemy> enemies = new List<Enemy>();
-enemies.Add(new Enemy(200,200));
+//Creates a list of entities and adds one to start
+List<Entity> entities = new();
+entities.Add(new Enemy(200,200,entities));
+entities.Add(new Player());
 
 while(!Raylib.WindowShouldClose())
 {
     //LOGIK
     //Uppdate Controller, Player and Enemies
-    controller.GameTime(enemies);
-    p.Update(enemies);
-    foreach (Enemy e in enemies)
+    controller.GameTime(entities);
+    foreach (Entity e in entities)
     {
-        e.Update(p);
+        e.Update(entities);
     }
 
     //GRAFIK
@@ -28,8 +30,7 @@ while(!Raylib.WindowShouldClose())
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.WHITE);
     map.Draw();
-    p.Draw();
-    foreach (Enemy e in enemies)
+    foreach (Entity e in entities)
     {
         e.Draw();
     }

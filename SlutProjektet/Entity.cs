@@ -1,4 +1,4 @@
-public class Entety
+public class Entity
 {
     public string name = "bob";
 
@@ -38,6 +38,16 @@ public class Entety
             Console.WriteLine(name+Health);
         }
         if (Health <= 0) Dead = true;
+    }
+
+    public virtual void Update(List<Entity> entities)
+    {
+
+    }
+
+    public virtual void Draw()
+    {
+
     }
 }
 

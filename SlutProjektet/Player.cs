@@ -1,4 +1,4 @@
-public class Player : Entety
+public class Player : Entity
 {
     //Animations
     private int[] aDownStop = {1};
@@ -66,7 +66,7 @@ public class Player : Entety
     }
 
     //Every frame
-    public void Update(List<Enemy> enemies)
+    public void Update(List<Entity> entities)
     {
         //Keep track of InvFrames
         if (InvFrame > 0) InvFrame -= Raylib.GetFrameTime();
@@ -92,7 +92,7 @@ public class Player : Entety
             if (!animIndex.Contains("Attack")) animIndex += "Attack";
             currentAnimation = animations[animIndex];
             attackCD = animSpeed*1.5f;
-            Attack(enemies);
+            Attack(entities);
             //Return to stop moving when attacking
             return;
         }
@@ -125,7 +125,7 @@ public class Player : Entety
     }
 
     //Move attack hitbox and deal damage
-    public void Attack(List<Enemy> enemies)
+    public void Attack(List<Entity> entities)
     {
         switch (animIndex)
         {
@@ -156,7 +156,7 @@ public class Player : Entety
         }
 
         //Check if enemy is in range, if true do GetHit()
-        foreach (Enemy e in enemies)
+        foreach (Enemy e in entities)
         {
             if (Raylib.CheckCollisionRecs(attackBox,e.hitBox))
             {
@@ -197,9 +197,17 @@ public class Player : Entety
     }
 
     //Draw to screen
-    public void Draw()
+    public override void Draw()
     {
         //Raylib.DrawRectangleRec(hitBox, Color.DARKBLUE);
         currentAnimation.Draw(this);
+    }
+
+    //Json
+    public void AnimationDeserializer()
+    {
+        string jsonText = File.ReadAllText("PlayerAnimations.json");
+
+        JsonSerializer.Deserialize<Animation>(jsonText);
     }
 }

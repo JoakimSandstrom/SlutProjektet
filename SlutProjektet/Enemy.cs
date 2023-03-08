@@ -1,5 +1,8 @@
-public class Enemy: Entety
+public class Enemy: Entity
 {
+    //Player index in list of entities
+    private int playerIndex;
+
     //Animations
     private int[] aDownStop = {1};
     private int[] aDown = {0,1,2,1};
@@ -13,7 +16,7 @@ public class Enemy: Entety
     private float distance = 0;
     private float timer = 0.48f;
 
-    public Enemy(float x, float y)
+    public Enemy(float x, float y, List<Entity> entities)
     {
         //Set Stats
         name = "Enemy";
@@ -21,6 +24,15 @@ public class Enemy: Entety
         Str = 1;
         Health = 3;
         frameSize = 48;
+
+        //Set refrence to player
+        foreach (Entity e in entities)
+        {
+            if (e is Player)
+            {
+                playerIndex = entities.IndexOf(e);
+            }
+        }
 
         //Set Enemy rectangle to keep track of position and collision
         animRect = new Rectangle(x, y, 48, 48);
@@ -47,7 +59,7 @@ public class Enemy: Entety
     }
     
     //This controlls the AI
-    public void Update(Player p)
+    public override void Update(List<Entity> entities)
     {
         //If enemy is dead, don't continue
         if (Dead) return;
@@ -56,9 +68,9 @@ public class Enemy: Entety
         if (InvFrame > 0) InvFrame -= Raylib.GetFrameTime();
 
         //Hit Player
-        if (Raylib.CheckCollisionRecs(hitBox,p.hitBox))
+        if (Raylib.CheckCollisionRecs(hitBox,entities[playerIndex].hitBox))
         {
-            p.GetHit(Str);
+            entities[playerIndex].GetHit(Str);
         }
 
         //Calculate direction to move
@@ -68,11 +80,11 @@ public class Enemy: Entety
             movement = Vector2.Zero;
 
             //Get the relative position of the player
-            movement.X = (p.animRect.x + 24) - animRect.x;
-            movement.Y = (p.animRect.y + 24) - animRect.y;
+            movement.X = (entities[playerIndex].animRect.x + 24) - animRect.x;
+            movement.Y = (entities[playerIndex].animRect.y + 24) - animRect.y;
 
             //If on player then don't proceed
-            if ((((p.animRect.x + 24) - animRect.x) <= 6 && ((p.animRect.x + 24) - animRect.x) >= -6 ) && ((p.animRect.y + 24) - animRect.y) <= 6 && ((p.animRect.y + 24) - animRect.y) >= -6) return;
+            if ((((entities[playerIndex].animRect.x + 24) - animRect.x) <= 6 && ((entities[playerIndex].animRect.x + 24) - animRect.x) >= -6 ) && ((entities[playerIndex].animRect.y + 24) - animRect.y) <= 6 && ((entities[playerIndex].animRect.y + 24) - animRect.y) >= -6) return;
 
             //Check directions and set speed and animation
             if (movement.X >= 0 && Math.Abs(movement.X) >= Math.Abs(movement.Y)) {movement.X = Speed; movement.Y = 0; animIndex = "aRight";}
