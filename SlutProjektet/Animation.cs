@@ -2,18 +2,10 @@ public class Animation
 {
     private string spriteSheetName;
 
-    //Json serialized variables
-    public string SpriteSheetFile {get; set;}
-    public int FrameSize { get; set;}
-    public List<int> Frame {get; set;}
-    public int ColumnWidth {get; set;}
-    public float TimerMaxValue {get; set;}
-    public bool Border {get; set;}
-
     //Changing Variables
-    //private List<int> frame;
-    //private int frameSize;
-    //private int columnWidth;
+    private List<int> frame;
+    private int frameSize;
+    private int columnWidth;
     private int borderSize = 0;
 
     //Set Variables
@@ -25,7 +17,7 @@ public class Animation
     public Animation next;
 
     //Timer variables
-    //private float timerMaxValue;
+    private float timerMaxValue;
     private float timerCurrentValue;
 
     //Dictionary of loaded textures
@@ -42,15 +34,15 @@ public class Animation
         spriteSheetName = spriteSheetFile;
 
         //Set variables
-        this.FrameSize = frameSize;
-        this.ColumnWidth = columnWidth;
-        this.Frame = new List<int>(frame);
+        this.frameSize = frameSize;
+        this.columnWidth = columnWidth;
+        this.frame = new List<int>(frame);
 
         //if sprite has a border => remove it.
         if (border) this.borderSize = frameSize / 3;
 
         //Timer variables
-        this.TimerMaxValue = timerMaxValue;
+        this.timerMaxValue = timerMaxValue;
         timerCurrentValue = timerMaxValue;
 
         next = this;
@@ -63,21 +55,21 @@ public class Animation
         //when timer hits 0, reset and go to next frame of animation
         if (timerCurrentValue < 0)
         {
-            timerCurrentValue = TimerMaxValue;
+            timerCurrentValue = timerMaxValue;
 
-            if (frameIndex == Frame.Count - 1) frameIndex = 0;
+            if (frameIndex == frame.Count - 1) frameIndex = 0;
             else frameIndex++;
         }
 
         //Sets row in spritsheet
-        if(Frame[frameIndex] != 0) row = Frame[frameIndex] / ColumnWidth;
+        if(frame[frameIndex] != 0) row = frame[frameIndex] / columnWidth;
         else row = 0;
 
         //Sets rectangle at correct location in spritesheet
-        source.x = ((Frame[frameIndex] % ColumnWidth) * FrameSize) + borderSize;
-        source.y = (row * FrameSize) + borderSize;
-        source.width = FrameSize - (borderSize * 2);
-        source.height = FrameSize - (borderSize * 2);
+        source.x = ((frame[frameIndex] % columnWidth) * frameSize) + borderSize;
+        source.y = (row * frameSize) + borderSize;
+        source.width = frameSize - (borderSize * 2);
+        source.height = frameSize - (borderSize * 2);
 
         //Draw frame
         Raylib.DrawTexturePro(spriteSheets[spriteSheetName], source, e.animRect, Vector2.Zero, 0, Color.WHITE);

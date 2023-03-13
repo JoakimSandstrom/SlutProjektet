@@ -1,6 +1,7 @@
 public class Player : Entity
 {
     //Animations
+    /*
     private int[] aDownStop = {1};
     private int[] aDown = {0,1,2,1};
     private int[] aLeftStop = {13};
@@ -13,6 +14,7 @@ public class Player : Entity
     private int[] aLeftAttack = {15,16,17};
     private int[] aRightAttack = {27,28,29};
     private int[] aUpAttack = {39,40,41};
+    */
 
     //Timer / attack Cool Down
     private float attackCD;
@@ -37,7 +39,10 @@ public class Player : Entity
         attackBox = new Rectangle(animRect.x+24, animRect.y+24, 20*scale, 20*scale);
         hitBox = new Rectangle(animRect.x+30,animRect.y+12,12*scale,16*scale);
 
+        AnimationDeserializer();
+
         //Load player Animations
+        /*
         animations.Add("aDownStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aDownStop, 12, animSpeed, false));
         animations.Add("aDown", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aDown, 12, animSpeed, false));
         animations.Add("aLeftStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aLeftStop, 12, animSpeed, false));
@@ -50,6 +55,7 @@ public class Player : Entity
         animations.Add("aLeftAttack", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aLeftAttack, 12, animSpeed/2, false));
         animations.Add("aRightAttack", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aRightAttack, 12, animSpeed/2, false));
         animations.Add("aUpAttack", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aUpAttack, 12, animSpeed/2, false));
+        */
 
         //Set Next Animation
         animations["aDown"].next = animations["aDownStop"];
@@ -63,10 +69,12 @@ public class Player : Entity
 
         //Set Starting Animation
         currentAnimation = animations["aDownStop"];
+
+        //AnimationSerializer();
     }
 
     //Every frame
-    public void Update(List<Entity> entities)
+    public override void Update(List<Entity> entities)
     {
         //Keep track of InvFrames
         if (InvFrame > 0) InvFrame -= Raylib.GetFrameTime();
@@ -156,8 +164,9 @@ public class Player : Entity
         }
 
         //Check if enemy is in range, if true do GetHit()
-        foreach (Enemy e in entities)
+        foreach (Entity e in entities)
         {
+            if (e is Player) continue;
             if (Raylib.CheckCollisionRecs(attackBox,e.hitBox))
             {
                 e.GetHit(Str);
@@ -199,15 +208,31 @@ public class Player : Entity
     //Draw to screen
     public override void Draw()
     {
-        //Raylib.DrawRectangleRec(hitBox, Color.DARKBLUE);
+        Raylib.DrawRectangleRec(attackBox, Color.DARKBLUE);
         currentAnimation.Draw(this);
     }
 
     //Json
     public void AnimationDeserializer()
     {
-        string jsonText = File.ReadAllText("PlayerAnimations.json");
-
-        JsonSerializer.Deserialize<Animation>(jsonText);
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        string jsonText = File.ReadAllText(@"PlayerAnimations.json");
+        Dictionary<string, int[]> deserializedAnimation = JsonSerializer.Deserialize<Dictionary<string, int[]>>(jsonText, options);
+        foreach(var v in deserializedAnimation)
+        {
+            animations.Add(v.Key, new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, v.Value, 12, animSpeed, false));
+        }
+    }
+    public void AnimationSerializer()
+    {
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+        string json = JsonSerializer.Serialize<Dictionary<string, Animation>>(animations, options);
+        File.WriteAllText("PlayerAnimations.json", json);
     }
 }

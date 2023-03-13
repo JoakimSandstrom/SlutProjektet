@@ -26,6 +26,7 @@ public class Enemy: Entity
         frameSize = 48;
 
         //Set refrence to player
+        //Player must be instantiated before enemy or this wont work
         foreach (Entity e in entities)
         {
             if (e is Player)
@@ -123,7 +124,7 @@ public class Enemy: Entity
     }
 
     //Draw to screen
-    public void Draw()
+    public override void Draw()
     {
         //Don't draw if dead
         if (Dead) return;

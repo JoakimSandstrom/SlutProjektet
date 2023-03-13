@@ -6,14 +6,13 @@ global using System.Text.Json;
 Raylib.InitWindow(960, 960, "Världens sämsta spel");
 Raylib.SetTargetFPS(60);
 
+//Draws Background
 Map map = new Map();
-Controller controller = new Controller();
-Player p = new Player();
-
-//Creates a list of entities and adds one to start
+//List of Entity, contains all entities
 List<Entity> entities = new();
-entities.Add(new Enemy(200,200,entities));
-entities.Add(new Player());
+//Keeps track of time, difficulty and spawns enemies
+Controller controller = new Controller(entities);
+
 
 while(!Raylib.WindowShouldClose())
 {
