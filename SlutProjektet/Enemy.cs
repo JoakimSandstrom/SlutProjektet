@@ -1,9 +1,10 @@
-public class Enemy: Entity
+public class Enemy : Entity
 {
     //Player index in list of entities
     private int playerIndex;
 
     //Animations
+    /*
     private int[] aDownStop = {1};
     private int[] aDown = {0,1,2,1};
     private int[] aLeftStop = {13};
@@ -12,20 +13,14 @@ public class Enemy: Entity
     private int[] aRight = {24,25,26,25};
     private int[] aUpStop = {37};
     private int[] aUp = {36,37,38,37};
+    */
 
     private float distance = 0;
     private float timer = 0.48f;
 
-    public Enemy(float x, float y, List<Entity> entities)
+    public Enemy(List<Entity> entities)
     {
-        //Set Stats
-        name = "Enemy";
-        Speed = 2f;
-        Str = 1;
-        Health = 3;
-        frameSize = 48;
-
-        //Set refrence to player
+        //Set refrence to Player
         //Player must be instantiated before enemy or this wont work
         foreach (Entity e in entities)
         {
@@ -34,29 +29,6 @@ public class Enemy: Entity
                 playerIndex = entities.IndexOf(e);
             }
         }
-
-        //Set Enemy rectangle to keep track of position and collision
-        animRect = new Rectangle(x, y, 48, 48);
-        hitBox = new Rectangle(animRect.x,animRect.y,48,48);
-
-        //Load player Animations
-        animations.Add("aDownStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aDownStop, 12, animSpeed, true));
-        animations.Add("aDown", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aDown, 12, animSpeed, true));
-        animations.Add("aLeftStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aLeftStop, 12, animSpeed, true));
-        animations.Add("aLeft", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aLeft, 12, animSpeed, true));
-        animations.Add("aRightStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aRightStop, 12, animSpeed, true));
-        animations.Add("aRight", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aRight, 12, animSpeed, true));
-        animations.Add("aUpStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aUpStop, 12, animSpeed, true));
-        animations.Add("aUp", new Animation("Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png", frameSize, aUp, 12, animSpeed, true));
-
-        //Set Next Animation
-        animations["aDown"].next = animations["aDownStop"];
-        animations["aLeft"].next = animations["aLeftStop"];
-        animations["aRight"].next = animations["aRightStop"];
-        animations["aUp"].next = animations["aUpStop"];
-
-        //Set Starting Animation
-        currentAnimation = animations["aDownStop"];
     }
     
     //This controlls the AI
@@ -128,8 +100,28 @@ public class Enemy: Entity
     {
         //Don't draw if dead
         if (Dead) return;
-        //Raylib.DrawRectangleRec(hitBox, Color.DARKGREEN);
+        Raylib.DrawRectangleRec(hitBox, Color.DARKGREEN);
         currentAnimation.Draw(this);
+    }
+    
+    //Sets rectangles and fetcches animations
+    public void NewEnemy(float x, float y)
+    {
+        //Set Enemy rectangle to keep track of position and collision
+        animRect = new Rectangle(x, y, frameSize, frameSize);
+        hitBox = new Rectangle(animRect.x,animRect.y,frameSize,frameSize);
+
+        //Load Animations
+        AnimationDeserializer(spriteSheet,frameSize,animSpeed,border);
+
+        //Set Next Animation
+        animations["aDown"].next = animations["aDownStop"];
+        animations["aLeft"].next = animations["aLeftStop"];
+        animations["aRight"].next = animations["aRightStop"];
+        animations["aUp"].next = animations["aUpStop"];
+
+        //Set Starting Animation
+        currentAnimation = animations["aDownStop"];
     }
 }
 

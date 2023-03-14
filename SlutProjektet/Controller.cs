@@ -9,7 +9,7 @@ public class Controller
     public Controller(List<Entity> entities)
     {
         entities.Add(new Player());
-        entities.Add(new Enemy((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144, entities));
+        entities.Add(new Slime((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144, entities));
     }
 
     //Keeps track of runtime and spawns enemy every 10 seconds
@@ -19,7 +19,7 @@ public class Controller
         //Spawn new enemies every 10 seconds at a random place
         if (GameTimer > 10f)
         {
-            entities.Add(new Enemy((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144, entities));
+            entities.Add(new Slime((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144, entities));
             GameTimer = 0;
         }
     }

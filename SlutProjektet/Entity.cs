@@ -24,10 +24,13 @@ public class Entity
     protected Dictionary<string, Animation> animations = new();
     protected Animation currentAnimation;
     protected string animIndex = "aDownStop";
-    protected bool isMoving = false;
-    protected float animSpeed = 0.12f;
-    public bool changedAnim = false;
+    protected string animationFile;
+    protected string spriteSheet;
     protected int frameSize;
+    protected float animSpeed = 0.12f;
+    protected bool border;
+
+    protected bool isMoving = false;
 
     //Get hit if no invinsibility frames
     public void GetHit(int damage)
@@ -49,6 +52,35 @@ public class Entity
     public virtual void Draw()
     {
 
+    }
+    public void AnimationSerializer()
+    {
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+        Dictionary<string,List<int>> serializedAnimations = new();
+        foreach (var v in animations)
+        {
+            serializedAnimations.Add(v.Key,animations[v.Key].frame);
+        }
+        string json = JsonSerializer.Serialize<Dictionary<string, List<int>>>(serializedAnimations, options);
+        File.WriteAllText(animationFile, json);
+    }
+    public virtual void AnimationDeserializer(string spriteSheet, int frameSize, float animSpeed, bool border)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        string jsonText = File.ReadAllText(@"PlayerAnimations.json");
+        //Deserialize dictionary containing animations
+        Dictionary<string, int[]> deserializedAnimation = JsonSerializer.Deserialize<Dictionary<string, int[]>>(jsonText, options);
+        //Add animations using deseralizedAnimations
+        foreach(var v in deserializedAnimation)
+        {
+            animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, 12, animSpeed, border));
+        }
     }
 }
 

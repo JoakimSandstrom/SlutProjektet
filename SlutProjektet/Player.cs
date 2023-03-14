@@ -16,6 +16,7 @@ public class Player : Entity
     private int[] aUpAttack = {39,40,41};
     */
 
+
     //Timer / attack Cool Down
     private float attackCD;
     private bool isAttacking;
@@ -38,13 +39,14 @@ public class Player : Entity
         frameSize = 32;
         baseAttackCD = animSpeed*3f;
         attackCD = baseAttackCD;
+        spriteSheet = "Sprites/dungeon-pack-free_version/sprite/free_character_0.png";
         
         //Set player rectangles to keep track of position, collistion and attacking
         animRect = new Rectangle(480, 480, 32*scale, 32*scale);
         attackBox = new Rectangle(animRect.x+24, animRect.y+24, 20*scale, 20*scale);
         hitBox = new Rectangle(animRect.x+30,animRect.y+12,12*scale,16*scale);
 
-        AnimationDeserializer();
+        AnimationDeserializer(spriteSheet,frameSize,animSpeed,border);
 
         //Load player Animations
         /*
@@ -119,7 +121,6 @@ public class Player : Entity
     //Move Player
     public void Movement()
     {
-        Console.WriteLine(isAttacking);
         //Lower Speed if attacking
         Speed = BaseSpeed;
         if (isAttacking) 
@@ -234,7 +235,7 @@ public class Player : Entity
     }
 
     //Json
-    public void AnimationDeserializer()
+    public override void AnimationDeserializer(string spriteSheet, int frameSize, float animSpeed, bool border)
     {
         var options = new JsonSerializerOptions
         {
@@ -249,18 +250,9 @@ public class Player : Entity
             //Attack animations are slower
             if(!v.Key.Contains("Attack"))
             {
-                animations.Add(v.Key, new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, v.Value, 12, animSpeed, false));
+                animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, 12, animSpeed, false));
             }
-            else animations.Add(v.Key, new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, v.Value, 12, attackCD/3, false));
+            else animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, 12, attackCD/3, false));
         }
-    }
-    public void AnimationSerializer()
-    {
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
-        string json = JsonSerializer.Serialize<Dictionary<string, Animation>>(animations, options);
-        File.WriteAllText("PlayerAnimations.json", json);
     }
 }

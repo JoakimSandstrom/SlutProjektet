@@ -3,7 +3,7 @@ public class Animation
     private string spriteSheetName;
 
     //Changing Variables
-    private List<int> frame;
+    public List<int> frame;
     private int frameSize;
     private int columnWidth;
     private int borderSize = 0;
