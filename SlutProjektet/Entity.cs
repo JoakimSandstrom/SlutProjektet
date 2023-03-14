@@ -14,6 +14,7 @@ public class Entity
 
     //Stats
     public float Speed {get; protected set;}
+    public float BaseSpeed {get; protected set;}
     public int Health {get; protected set;}
     public int Str {get; protected set;}
     public float InvFrame {get; protected set;} = 0.5f;

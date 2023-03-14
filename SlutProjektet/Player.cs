@@ -18,7 +18,9 @@ public class Player : Entity
 
     //Timer / attack Cool Down
     private float attackCD;
-    public bool IsAttacking {get;private set;} = false;
+    private bool isAttacking;
+    private float baseAttackCD;
+    
 
     //Collision variables
     private bool colliding = false;
@@ -30,10 +32,13 @@ public class Player : Entity
     {
         //Set Player stats
         name = "player";
-        Speed = 5f;
+        BaseSpeed = 5f;
+        Speed = BaseSpeed;
         Str = 1;
         frameSize = 32;
-
+        baseAttackCD = animSpeed*3f;
+        attackCD = baseAttackCD;
+        
         //Set player rectangles to keep track of position, collistion and attacking
         animRect = new Rectangle(480, 480, 32*scale, 32*scale);
         attackBox = new Rectangle(animRect.x+24, animRect.y+24, 20*scale, 20*scale);
@@ -83,33 +88,44 @@ public class Player : Entity
         if (attackCD > 0)
         {
             attackCD -= Raylib.GetFrameTime();
-            IsAttacking = true;
-            return;
+            isAttacking = true;
         }
-        IsAttacking = false;
+        else isAttacking = false;
 
+        //Controlls
+        if (Input()) Attack(entities);
+
+        if (isMoving) Movement();
+        else if (!isAttacking) currentAnimation = currentAnimation.next;
+    }
+
+    public bool Input()
+    {
         //Reset Vector2
         movement = Vector2.Zero;
-
-    //**Controlls**
-        //Attack controlls and method
-        if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT))
-        {
-            //Change current animation to an attack animation
-            if (animIndex.Contains("Stop")) animIndex = animIndex.Substring(0,animIndex.LastIndexOf("Stop"));
-            if (!animIndex.Contains("Attack")) animIndex += "Attack";
-            currentAnimation = animations[animIndex];
-            attackCD = animSpeed*1.5f;
-            Attack(entities);
-            //Return to stop moving when attacking
-            return;
-        }
-
         //Movement controlls
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_S) || Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {movement.Y = 1; animIndex = "aDown"; isMoving = true;}
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_A) || Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {movement.X = -1; animIndex = "aLeft"; isMoving = true;}
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_D) || Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {movement.X = 1; animIndex = "aRight"; isMoving = true;}
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_W) || Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {movement.Y = -1; animIndex = "aUp"; isMoving = true;}
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_S)) {movement.Y = 1; animIndex = "aDown"; isMoving = true;}
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_A)) {movement.X = -1; animIndex = "aLeft"; isMoving = true;}
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_D)) {movement.X = 1; animIndex = "aRight"; isMoving = true;}
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_W)) {movement.Y = -1; animIndex = "aUp"; isMoving = true;}
+        //Attack controlls
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {animIndex = "aDownAttack"; return true;}
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {animIndex = "aLeftAttack"; return true;}
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {animIndex = "aRightAttack"; return true;}
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {animIndex = "aUpAttack"; return true;}
+        return false;
+    }
+
+    //Move Player
+    public void Movement()
+    {
+        Console.WriteLine(isAttacking);
+        //Lower Speed if attacking
+        Speed = BaseSpeed;
+        if (isAttacking) 
+        {
+            Speed = Speed / 2;
+        }
 
         //Normalize Vector2 if not 0 which would break the code.
         if (movement.Length() > 0)
@@ -121,20 +137,25 @@ public class Player : Entity
         //If new position is outside the playable area, push the Player back in
         animRect.x += movement.X;
         hitBox.x += movement.X;
+        attackBox.x += movement.X;
         CheckCollision("x");
         animRect.y += movement.Y;
         hitBox.y += movement.Y;
+        attackBox.y += movement.Y;
         CheckCollision("y");
 
         //Change Animation State
-        if (isMoving) currentAnimation = animations[animIndex];
-        else if (!isMoving) currentAnimation = currentAnimation.next;
+        if (!isAttacking) currentAnimation = animations[animIndex];
         isMoving = false;
     }
 
     //Move attack hitbox and deal damage
     public void Attack(List<Entity> entities)
     {
+        currentAnimation = animations[animIndex];
+        attackCD = baseAttackCD;
+
+        //Move attackBox based on attacking directions
         switch (animIndex)
         {
             case "aDownAttack":
@@ -220,10 +241,17 @@ public class Player : Entity
             PropertyNameCaseInsensitive = true
         };
         string jsonText = File.ReadAllText(@"PlayerAnimations.json");
+        //Deserialize dictionary containing animations
         Dictionary<string, int[]> deserializedAnimation = JsonSerializer.Deserialize<Dictionary<string, int[]>>(jsonText, options);
+        //Add animations using deseralizedAnimations
         foreach(var v in deserializedAnimation)
         {
-            animations.Add(v.Key, new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, v.Value, 12, animSpeed, false));
+            //Attack animations are slower
+            if(!v.Key.Contains("Attack"))
+            {
+                animations.Add(v.Key, new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, v.Value, 12, animSpeed, false));
+            }
+            else animations.Add(v.Key, new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, v.Value, 12, attackCD/3, false));
         }
     }
     public void AnimationSerializer()
