@@ -10,6 +10,7 @@ public class Slime : Enemy
         Health = 3;
         frameSize = 48;
         border = true;
+        columnWidth = 12;
         spriteSheet = "Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png";
         animationFile = "SlimeAnimations.json";
 

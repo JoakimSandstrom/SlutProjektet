@@ -17,7 +17,8 @@ public class Entity
     public float BaseSpeed {get; protected set;}
     public int Health {get; protected set;}
     public int Str {get; protected set;}
-    public float InvFrame {get; protected set;} = 0.5f;
+    public float InvFrame {get; protected set;} = 1f;
+    protected float baseInvFrame = 1f;
     public bool Dead {get; set;} = false;
 
     //Animation dictionary and variables
@@ -29,6 +30,7 @@ public class Entity
     protected int frameSize;
     protected float animSpeed = 0.12f;
     protected bool border;
+    protected int columnWidth;
 
     protected bool isMoving = false;
 
@@ -38,7 +40,7 @@ public class Entity
         if (InvFrame <= 0)
         {
             Health -= damage;
-            InvFrame = 0.5f;
+            InvFrame = baseInvFrame;
             Console.WriteLine(name+Health);
         }
         if (Health <= 0) Dead = true;
@@ -67,19 +69,19 @@ public class Entity
         string json = JsonSerializer.Serialize<Dictionary<string, List<int>>>(serializedAnimations, options);
         File.WriteAllText(animationFile, json);
     }
-    public virtual void AnimationDeserializer(string spriteSheet, int frameSize, float animSpeed, bool border)
+    public virtual void AnimationDeserializer(string animationFile, string spriteSheet, int frameSize,int columnWidth, float animSpeed, bool border)
     {
         var options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
-        string jsonText = File.ReadAllText(@"PlayerAnimations.json");
+        string jsonText = File.ReadAllText(animationFile);
         //Deserialize dictionary containing animations
         Dictionary<string, int[]> deserializedAnimation = JsonSerializer.Deserialize<Dictionary<string, int[]>>(jsonText, options);
         //Add animations using deseralizedAnimations
         foreach(var v in deserializedAnimation)
         {
-            animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, 12, animSpeed, border));
+            animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, columnWidth, animSpeed, border));
         }
     }
 }

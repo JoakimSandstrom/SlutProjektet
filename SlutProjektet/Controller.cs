@@ -19,7 +19,7 @@ public class Controller
         //Spawn new enemies every 10 seconds at a random place
         if (GameTimer > 10f)
         {
-            entities.Add(new Slime((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144, entities));
+            entities.Add(new SmallOrc((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144, entities));
             GameTimer = 0;
         }
     }

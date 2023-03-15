@@ -1,7 +1,7 @@
 public class Enemy : Entity
 {
     //Player index in list of entities
-    private int playerIndex;
+    protected int playerIndex;
 
     //Animations
     /*
@@ -15,11 +15,26 @@ public class Enemy : Entity
     private int[] aUp = {36,37,38,37};
     */
 
-    private float distance = 0;
-    private float timer = 0.48f;
+    protected float distance = 0;
+    protected float timer = 0.48f;
 
     public Enemy(List<Entity> entities)
     {
+        /*Set variables
+        name
+        Speed
+        Str
+        Health
+        frameSize
+        border
+        spriteSheet
+        animationFile
+        animSpeed
+        */
+
+        baseInvFrame = 0.5f;
+        InvFrame = baseInvFrame;
+        
         //Set refrence to Player
         //Player must be instantiated before enemy or this wont work
         foreach (Entity e in entities)
@@ -100,19 +115,19 @@ public class Enemy : Entity
     {
         //Don't draw if dead
         if (Dead) return;
-        Raylib.DrawRectangleRec(hitBox, Color.DARKGREEN);
+        //Raylib.DrawRectangleRec(hitBox, Color.DARKGREEN);
         currentAnimation.Draw(this);
     }
     
     //Sets rectangles and fetcches animations
-    public void NewEnemy(float x, float y)
+    public virtual void NewEnemy(float x, float y)
     {
         //Set Enemy rectangle to keep track of position and collision
         animRect = new Rectangle(x, y, frameSize, frameSize);
         hitBox = new Rectangle(animRect.x,animRect.y,frameSize,frameSize);
 
         //Load Animations
-        AnimationDeserializer(spriteSheet,frameSize,animSpeed,border);
+        AnimationDeserializer(animationFile,spriteSheet,frameSize,columnWidth,animSpeed,border);
 
         //Set Next Animation
         animations["aDown"].next = animations["aDownStop"];

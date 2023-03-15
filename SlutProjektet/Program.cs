@@ -3,7 +3,7 @@ global using System.Numerics;
 global using System.IO;
 global using System.Text.Json;
 
-Raylib.InitWindow(960, 960, "Världens sämsta spel");
+Raylib.InitWindow(1920, 1080, "Världens sämsta spel");
 Raylib.SetTargetFPS(60);
 
 //Draws Background

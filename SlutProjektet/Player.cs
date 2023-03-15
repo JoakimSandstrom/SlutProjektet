@@ -37,16 +37,19 @@ public class Player : Entity
         Speed = BaseSpeed;
         Str = 1;
         frameSize = 32;
+        border = false;
+        columnWidth = 12;
         baseAttackCD = animSpeed*3f;
-        attackCD = baseAttackCD;
+        animationFile = "PlayerAnimations.json";
         spriteSheet = "Sprites/dungeon-pack-free_version/sprite/free_character_0.png";
-        
+        baseInvFrame = 1f;
+
         //Set player rectangles to keep track of position, collistion and attacking
         animRect = new Rectangle(480, 480, 32*scale, 32*scale);
         attackBox = new Rectangle(animRect.x+24, animRect.y+24, 20*scale, 20*scale);
         hitBox = new Rectangle(animRect.x+30,animRect.y+12,12*scale,16*scale);
 
-        AnimationDeserializer(spriteSheet,frameSize,animSpeed,border);
+        AnimationDeserializer(animationFile,spriteSheet,frameSize,columnWidth,animSpeed,border);
 
         //Load player Animations
         /*
@@ -95,7 +98,7 @@ public class Player : Entity
         else isAttacking = false;
 
         //Controlls
-        if (Input()) Attack(entities);
+        if (Input() && !isAttacking) Attack(entities);
 
         if (isMoving) Movement();
         else if (!isAttacking) currentAnimation = currentAnimation.next;
@@ -154,6 +157,7 @@ public class Player : Entity
     public void Attack(List<Entity> entities)
     {
         currentAnimation = animations[animIndex];
+        isAttacking = true;
         attackCD = baseAttackCD;
 
         //Move attackBox based on attacking directions
@@ -217,11 +221,13 @@ public class Player : Entity
                 {
                     animRect.x -= movement.X;
                     hitBox.x -= movement.X;
+                    attackBox.x -= movement.X;
                 }
                 else if (s == "y")
                 {
                     animRect.y -= movement.Y;
                     hitBox.y -= movement.Y;
+                    attackBox.y -= movement.Y;
                 }
             }
         }
@@ -235,13 +241,13 @@ public class Player : Entity
     }
 
     //Json
-    public override void AnimationDeserializer(string spriteSheet, int frameSize, float animSpeed, bool border)
+    public override void AnimationDeserializer(string animationFile, string spriteSheet, int frameSize,int columnWidth, float animSpeed, bool border)
     {
         var options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
-        string jsonText = File.ReadAllText(@"PlayerAnimations.json");
+        string jsonText = File.ReadAllText(animationFile);
         //Deserialize dictionary containing animations
         Dictionary<string, int[]> deserializedAnimation = JsonSerializer.Deserialize<Dictionary<string, int[]>>(jsonText, options);
         //Add animations using deseralizedAnimations
