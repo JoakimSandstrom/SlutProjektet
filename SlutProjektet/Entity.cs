@@ -13,11 +13,13 @@ public class Entity
     public Rectangle hitBox;
 
     //Stats
-    public float Speed {get; protected set;}
+    public float Speed {get; set;}
     public float BaseSpeed {get; protected set;}
-    public int Health {get; protected set;}
-    public int Str {get; protected set;}
-    public float InvFrame {get; protected set;} = 1f;
+    public int Health {get; set;}
+    public int BaseHealth {get; protected set;}
+    public int Str {get; set;}
+    public int BaseStr {get; protected set;}
+    public float InvFrame {get; set;} = 1f;
     protected float baseInvFrame = 1f;
     public bool Dead {get; set;} = false;
 

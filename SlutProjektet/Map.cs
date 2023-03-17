@@ -8,6 +8,8 @@ public class Map
 
     //List of collision rectangles
     public static List<Rectangle> collision = new();
+    //List of Object, contains all game objects
+    public static List<Object> objects = new();
 
     //Add collision rectangles
     public Map()
@@ -22,15 +24,22 @@ public class Map
         collision.Add(new Rectangle(672,240,48,48));
         collision.Add(new Rectangle(192,720,48,48));
         collision.Add(new Rectangle(720,720,48,48));
+
+        objects.Add(new Chest());
+
+        foreach (Object o in objects)
+        {
+            collision.Add(o.Rect);
+        }
     }
 
     //Draw Texture on screen
     public void Draw()
     {
         Raylib.DrawTextureEx(tx, Vector2.Zero, 0, scale, Color.WHITE);
-        //foreach (Rectangle r in collision)
-        //{
-        //    Raylib.DrawRectangleRec(r, Color.DARKBLUE);
-        //}
+        foreach (Object o in objects)
+        {
+            o.Draw();
+        }
     }
 }
