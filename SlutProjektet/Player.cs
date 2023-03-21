@@ -84,7 +84,7 @@ public class Player : Entity
     }
 
     //Every frame
-    public override void Update(List<Entity> entities)
+    public override void Update()
     {
         //Keep track of InvFrames
         if (InvFrame > 0) InvFrame -= Raylib.GetFrameTime();
@@ -98,7 +98,7 @@ public class Player : Entity
         else isAttacking = false;
 
         //Controlls
-        if (Input() && !isAttacking) Attack(entities);
+        if (Input() && !isAttacking) Attack();
 
         if (isMoving) Movement();
         else if (!isAttacking) currentAnimation = currentAnimation.next;
@@ -154,7 +154,7 @@ public class Player : Entity
     }
 
     //Move attack hitbox and deal damage
-    public void Attack(List<Entity> entities)
+    public void Attack()
     {
         currentAnimation = animations[animIndex];
         isAttacking = true;
@@ -190,7 +190,7 @@ public class Player : Entity
         }
 
         //Check if enemy is in range, if true do GetHit()
-        foreach (Entity e in entities)
+        foreach (Entity e in Controller.entities)
         {
             if (e is Player) continue;
             if (Raylib.CheckCollisionRecs(attackBox,e.hitBox))
@@ -229,6 +229,14 @@ public class Player : Entity
                     hitBox.y -= movement.Y;
                     attackBox.y -= movement.Y;
                 }
+            }
+        }
+        foreach (Item i in Controller.itemObjs)
+        {
+            if (Raylib.CheckCollisionPointRec(collPoint1, i.rect) || Raylib.CheckCollisionPointRec(collPoint2, i.rect) || Raylib.CheckCollisionPointRec(collPoint3, i.rect))
+            {
+                Controller.items.Add(i);
+                i.PickUp();
             }
         }
     }

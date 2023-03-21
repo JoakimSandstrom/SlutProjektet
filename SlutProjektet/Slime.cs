@@ -1,7 +1,7 @@
 
 public class Slime : Enemy
 {
-    public Slime(float x, float y, List<Entity> entities) : base(entities)
+    public Slime(float x, float y)
     {
         //Set Variables
         name = "Slime";

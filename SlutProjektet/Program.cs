@@ -9,19 +9,19 @@ Raylib.SetTargetFPS(60);
 //Draws Background
 Map map = new Map();
 //List of Entity, contains all entities
-List<Entity> entities = new();
+
 //Keeps track of time, difficulty and spawns enemies
-Controller controller = new Controller(entities);
+Controller controller = new Controller();
 
 
 while(!Raylib.WindowShouldClose())
 {
     //LOGIK
     //Uppdate Controller, Player and Enemies
-    controller.GameTime(entities);
-    foreach (Entity e in entities)
+    controller.GameTime();
+    foreach (Entity e in Controller.entities)
     {
-        e.Update(entities);
+        e.Update();
     }
 
     //GRAFIK
@@ -29,7 +29,11 @@ while(!Raylib.WindowShouldClose())
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.WHITE);
     map.Draw();
-    foreach (Entity e in entities)
+    foreach (Item i in Controller.items)
+    {
+        i.Draw();
+    }
+    foreach (Entity e in Controller.entities)
     {
         e.Draw();
     }

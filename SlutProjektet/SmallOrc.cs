@@ -1,6 +1,6 @@
 public class SmallOrc : Enemy
 {
-    public SmallOrc(float x, float y, List<Entity> entities) : base(entities)
+    public SmallOrc(float x, float y)
     {
         //Set Variables
         name = "SmallOrc";
@@ -37,20 +37,8 @@ public class SmallOrc : Enemy
         currentAnimation = animations["aRightStop"];
     }
     
-    public override void Update(List<Entity> entities)
+    public override void Direction()
     {
-        //If enemy is dead, don't continue
-        if (Dead) return;
-        
-        //Keep track of InvFrames
-        if (InvFrame > 0) InvFrame -= Raylib.GetFrameTime();
-
-        //Hit Player
-        if (Raylib.CheckCollisionRecs(hitBox,entities[playerIndex].hitBox))
-        {
-            entities[playerIndex].GetHit(Str);
-        }
-
         //Calculate direction to move
         if (distance <= -48f)
         {
@@ -58,19 +46,12 @@ public class SmallOrc : Enemy
             movement = Vector2.Zero;
 
             //Get the relative position of the player
-            movement.X = (entities[playerIndex].animRect.x + 24) - animRect.x;
-            movement.Y = (entities[playerIndex].animRect.y + 24) - animRect.y;
+            movement.X = (Controller.entities[Controller.playerIndex].animRect.x + 24) - animRect.x;
+            movement.Y = (Controller.entities[Controller.playerIndex].animRect.y + 24) - animRect.y;
 
             //If on player then don't proceed
-            if ((((entities[playerIndex].animRect.x + 24) - animRect.x) <= 6 && ((entities[playerIndex].animRect.x + 24) - animRect.x) >= -6 ) && ((entities[playerIndex].animRect.y + 24) - animRect.y) <= 6 && ((entities[playerIndex].animRect.y + 24) - animRect.y) >= -6)
-            {
-                //Change to idle animation
-                if (!animIndex.Contains("Stop"))
-                {
-                    currentAnimation = currentAnimation.next;
-                }
-                return;
-            }
+            if ((((Controller.entities[Controller.playerIndex].animRect.x + 24) - animRect.x) <= 6 && ((Controller.entities[Controller.playerIndex].animRect.x + 24) - animRect.x) >= -6 ) && ((Controller.entities[Controller.playerIndex].animRect.y + 24) - animRect.y) <= 6 && ((Controller.entities[Controller.playerIndex].animRect.y + 24) - animRect.y) >= -6) return;
+
             //Check directions and set speed and animation
             if (movement.X >= 0 && Math.Abs(movement.X) >= Math.Abs(movement.Y)) {movement.X = Speed; movement.Y = 0; animIndex = "aRight";}
             else if (movement.X <= 0 && Math.Abs(movement.X) >= Math.Abs(movement.Y)) {movement.X = -Speed; movement.Y = 0; animIndex = "aLeft";}
@@ -84,20 +65,6 @@ public class SmallOrc : Enemy
             //Reset distance
             distance = 48f;
             timer = 0.48f;
-        }
-
-        //Decrease distance and timer
-        distance -= Speed;
-        timer -= Raylib.GetFrameTime();
-        
-        //Move
-        if (timer > 0)
-        {
-            //Add Vector2 to Enemy position
-            animRect.x += movement.X;
-            animRect.y += movement.Y;
-            hitBox.x += movement.X;
-            hitBox.y += movement.Y;
         }
     }
 }

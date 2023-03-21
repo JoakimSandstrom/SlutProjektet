@@ -1,24 +1,11 @@
 public class Enemy : Entity
 {
-    //Player index in list of entities
-    protected int playerIndex;
-
-    //Animations
-    /*
-    private int[] aDownStop = {1};
-    private int[] aDown = {0,1,2,1};
-    private int[] aLeftStop = {13};
-    private int[] aLeft = {12,13,14,13};
-    private int[] aRightStop = {25};
-    private int[] aRight = {24,25,26,25};
-    private int[] aUpStop = {37};
-    private int[] aUp = {36,37,38,37};
-    */
-
     protected float distance = 0;
     protected float timer = 0.48f;
 
-    public Enemy(List<Entity> entities)
+    protected float itemChance = 1f;
+
+    public Enemy()
     {
         /*Set variables
         name
@@ -34,20 +21,10 @@ public class Enemy : Entity
 
         baseInvFrame = 0.5f;
         InvFrame = baseInvFrame;
-        
-        //Set refrence to Player
-        //Player must be instantiated before enemy or this wont work
-        foreach (Entity e in entities)
-        {
-            if (e is Player)
-            {
-                playerIndex = entities.IndexOf(e);
-            }
-        }
     }
     
     //This controlls the AI
-    public override void Update(List<Entity> entities)
+    public override void Update()
     {
         //If enemy is dead, don't continue
         if (Dead) return;
@@ -56,38 +33,12 @@ public class Enemy : Entity
         if (InvFrame > 0) InvFrame -= Raylib.GetFrameTime();
 
         //Hit Player
-        if (Raylib.CheckCollisionRecs(hitBox,entities[playerIndex].hitBox))
+        if (Raylib.CheckCollisionRecs(hitBox,Controller.entities[Controller.playerIndex].hitBox))
         {
-            entities[playerIndex].GetHit(Str);
+            Controller.entities[Controller.playerIndex].GetHit(Str);
         }
 
-        //Calculate direction to move
-        if (distance <= -48f)
-        {
-            //Reset Vector2
-            movement = Vector2.Zero;
-
-            //Get the relative position of the player
-            movement.X = (entities[playerIndex].animRect.x + 24) - animRect.x;
-            movement.Y = (entities[playerIndex].animRect.y + 24) - animRect.y;
-
-            //If on player then don't proceed
-            if ((((entities[playerIndex].animRect.x + 24) - animRect.x) <= 6 && ((entities[playerIndex].animRect.x + 24) - animRect.x) >= -6 ) && ((entities[playerIndex].animRect.y + 24) - animRect.y) <= 6 && ((entities[playerIndex].animRect.y + 24) - animRect.y) >= -6) return;
-
-            //Check directions and set speed and animation
-            if (movement.X >= 0 && Math.Abs(movement.X) >= Math.Abs(movement.Y)) {movement.X = Speed; movement.Y = 0; animIndex = "aRight";}
-            else if (movement.X <= 0 && Math.Abs(movement.X) >= Math.Abs(movement.Y)) {movement.X = -Speed; movement.Y = 0; animIndex = "aLeft";}
-            else if (movement.Y >= 0 && Math.Abs(movement.Y) >= Math.Abs(movement.X)) {movement.X = 0; movement.Y = Speed; animIndex = "aDown";}
-            else if (movement.Y <= 0 && Math.Abs(movement.Y) >= Math.Abs(movement.X)) {movement.X = 0; movement.Y = -Speed; animIndex = "aUp";}
-            else Console.WriteLine("Error!!!");
-
-            //Change Animation State
-            currentAnimation = animations[animIndex];
-
-            //Reset distance
-            distance = 48f;
-            timer = 0.48f;
-        }
+        Direction();
 
         //Decrease distance and timer
         distance -= Speed;
@@ -107,6 +58,37 @@ public class Enemy : Entity
         if (timer < 0 && !animIndex.Contains("Stop"))
         {
             currentAnimation = currentAnimation.next;
+        }
+    }
+
+    public virtual void Direction()
+    {
+        //Calculate direction to move
+        if (distance <= -48f)
+        {
+            //Reset Vector2
+            movement = Vector2.Zero;
+
+            //Get the relative position of the player
+            movement.X = (Controller.entities[Controller.playerIndex].animRect.x + 24) - animRect.x;
+            movement.Y = (Controller.entities[Controller.playerIndex].animRect.y + 24) - animRect.y;
+
+            //If on player then don't proceed
+            if ((((Controller.entities[Controller.playerIndex].animRect.x + 24) - animRect.x) <= 6 && ((Controller.entities[Controller.playerIndex].animRect.x + 24) - animRect.x) >= -6 ) && ((Controller.entities[Controller.playerIndex].animRect.y + 24) - animRect.y) <= 6 && ((Controller.entities[Controller.playerIndex].animRect.y + 24) - animRect.y) >= -6) return;
+
+            //Check directions and set speed and animation
+            if (movement.X >= 0 && Math.Abs(movement.X) >= Math.Abs(movement.Y)) {movement.X = Speed; movement.Y = 0; animIndex = "aRight";}
+            else if (movement.X <= 0 && Math.Abs(movement.X) >= Math.Abs(movement.Y)) {movement.X = -Speed; movement.Y = 0; animIndex = "aLeft";}
+            else if (movement.Y >= 0 && Math.Abs(movement.Y) >= Math.Abs(movement.X)) {movement.X = 0; movement.Y = Speed; animIndex = "aDown";}
+            else if (movement.Y <= 0 && Math.Abs(movement.Y) >= Math.Abs(movement.X)) {movement.X = 0; movement.Y = -Speed; animIndex = "aUp";}
+            else Console.WriteLine("Error!!!");
+
+            //Change Animation State
+            currentAnimation = animations[animIndex];
+
+            //Reset distance
+            distance = 48f;
+            timer = 0.48f;
         }
     }
 
@@ -137,6 +119,18 @@ public class Enemy : Entity
 
         //Set Starting Animation
         currentAnimation = animations["aDownStop"];
+    }
+
+    public override void Death()
+    {
+        Vector2 pos = new();
+        pos.X = hitBox.x;
+        pos.Y = hitBox.y;
+        Dead = true;
+        if (itemChance >= (float)(Controller.random.NextDouble()))
+        {
+            Controller.SpawnItem(pos);
+        }
     }
 }
 

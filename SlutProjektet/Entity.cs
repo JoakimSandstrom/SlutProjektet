@@ -3,9 +3,12 @@ public class Entity
     public string name = "bob";
 
     //Raylib variables
-    //public Rectangle source;
     protected Vector2 movement = new();
     protected int scale = Map.scale;
+
+    HashSet<Item> items = new HashSet<Item>();
+
+    
 
     //Hitbox
     public Rectangle attackBox;
@@ -45,14 +48,13 @@ public class Entity
             InvFrame = baseInvFrame;
             Console.WriteLine(name+Health);
         }
-        if (Health <= 0) Dead = true;
+        if (Health <= 0) Death();
     }
 
-    public virtual void Update(List<Entity> entities)
+    public virtual void Update()
     {
 
     }
-
     public virtual void Draw()
     {
 
@@ -85,6 +87,22 @@ public class Entity
         {
             animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, columnWidth, animSpeed, border));
         }
+    }
+    public void AddItem(Item newItem)
+    {
+        foreach (Item i in items)
+        {
+            if (i == newItem)
+            {
+                newItem.PickUp();
+                return;
+            }
+        }
+        
+    }
+    public virtual void Death()
+    {
+
     }
 }
 

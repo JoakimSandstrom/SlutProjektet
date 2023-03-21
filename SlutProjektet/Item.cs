@@ -1,8 +1,21 @@
 public class Item
 {
-    public string Rarity {get; protected set;} = "";
-    public virtual void PickUp(List<Entity> entities)
+    public bool PickedUp { get; protected set; } = false;
+    
+    public Rectangle rect;
+
+    //static variables
+    protected static int scale = Map.scale;
+    protected static Texture2D texture;
+    public static string Rarity {get; protected set;} = "";
+
+    public virtual void PickUp()
     {
         
+    }
+    public virtual void Draw()
+    {
+        //Raylib.DrawRectangleRec(rect, Color.DARKBLUE);
+        Raylib.DrawTextureEx(texture,new Vector2(rect.x,rect.y),0,scale,Color.WHITE);
     }
 }
