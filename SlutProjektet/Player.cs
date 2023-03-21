@@ -258,7 +258,7 @@ public class Player : Entity
             {
                 animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, 12, animSpeed, false));
             }
-            else animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, 12, attackCD/3, false));
+            else animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, 12, baseAttackCD/3, false));
         }
     }
 }
