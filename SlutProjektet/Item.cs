@@ -8,6 +8,8 @@ public class Item
     protected static int scale = Map.scale;
     protected static Texture2D texture;
     public static string Rarity {get; protected set;} = "";
+    protected static int id;
+    protected int amount = 0;
 
     public virtual void PickUp()
     {

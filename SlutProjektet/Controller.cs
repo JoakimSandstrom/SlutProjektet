@@ -6,13 +6,7 @@ public class Controller
     public float GameTimer { get; private set; } = 0;
 
     public static List<Entity> entities = new();
-    public static List<Item> itemObjs = new();
-    public static HashSet<Item> items = new();
-
-    public static Func<Item>[] itemMaker = 
-    {
-        () => new Heart(newItemPos)
-    };
+    public static List<ItemPickup> itemPickups = new();
 
     public static int playerIndex;
 
@@ -35,12 +29,8 @@ public class Controller
             GameTimer = 0;
         }
     }
-
-    public static Vector2 newItemPos = new();
-    public static void SpawnItem(Vector2 pos)
+    public static void SpawnItem(Vector2 pos, int itemId)
     {
-        newItemPos = pos;
-        int randomIndex = 0;
-        itemObjs.Add(itemMaker[randomIndex]());
+        itemPickups.Add(new ItemPickup(pos,itemId));
     }
 }

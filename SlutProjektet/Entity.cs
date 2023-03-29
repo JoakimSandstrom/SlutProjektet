@@ -6,14 +6,14 @@ public class Entity
     protected Vector2 movement = new();
     protected int scale = Map.scale;
 
-    HashSet<Item> items = new HashSet<Item>();
+    protected Dictionary<int,Item> items = new Dictionary<int,Item>();
 
-    
 
     //Hitbox
     public Rectangle attackBox;
     public Rectangle animRect;
     public Rectangle hitBox;
+    public Rectangle collisionBox;
 
     //Stats
     public float Speed {get; set;}
@@ -88,17 +88,10 @@ public class Entity
             animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, columnWidth, animSpeed, border));
         }
     }
-    public void AddItem(Item newItem)
+    public void AddItem(ItemPickup i)
     {
-        foreach (Item i in items)
-        {
-            if (i == newItem)
-            {
-                newItem.PickUp();
-                return;
-            }
-        }
-        
+        if (!items.ContainsKey(i.itemId)) items.Add(i.itemId,i.itemMaker[i.itemId]());
+        items[i.itemId].PickUp();
     }
     public virtual void Death()
     {

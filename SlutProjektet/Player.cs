@@ -1,33 +1,9 @@
 public class Player : Entity
 {
-    //Animations
-    /*
-    private int[] aDownStop = {1};
-    private int[] aDown = {0,1,2,1};
-    private int[] aLeftStop = {13};
-    private int[] aLeft = {12,13,14,13};
-    private int[] aRightStop = {25};
-    private int[] aRight = {24,25,26,25};
-    private int[] aUpStop = {37};
-    private int[] aUp = {36,37,38,37};
-    private int[] aDownAttack = {3,4,5};
-    private int[] aLeftAttack = {15,16,17};
-    private int[] aRightAttack = {27,28,29};
-    private int[] aUpAttack = {39,40,41};
-    */
-
-
     //Timer / attack Cool Down
     private float attackCD;
     private bool isAttacking;
     private float baseAttackCD;
-    
-
-    //Collision variables
-    private bool colliding = false;
-    private Vector2 collPoint1;
-    private Vector2 collPoint2;
-    private Vector2 collPoint3;
 
     public Player()
     {
@@ -48,24 +24,9 @@ public class Player : Entity
         animRect = new Rectangle(480, 480, 32*scale, 32*scale);
         attackBox = new Rectangle(animRect.x+24, animRect.y+24, 20*scale, 20*scale);
         hitBox = new Rectangle(animRect.x+30,animRect.y+12,12*scale,16*scale);
+        collisionBox = new Rectangle(hitBox.x,hitBox.y+(hitBox.height*0.75f),hitBox.width,hitBox.height*0.25f);
 
         AnimationDeserializer(animationFile,spriteSheet,frameSize,columnWidth,animSpeed,border);
-
-        //Load player Animations
-        /*
-        animations.Add("aDownStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aDownStop, 12, animSpeed, false));
-        animations.Add("aDown", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aDown, 12, animSpeed, false));
-        animations.Add("aLeftStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aLeftStop, 12, animSpeed, false));
-        animations.Add("aLeft", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aLeft, 12, animSpeed, false));
-        animations.Add("aRightStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aRightStop, 12, animSpeed, false));
-        animations.Add("aRight", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aRight, 12, animSpeed, false));
-        animations.Add("aUpStop", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aUpStop, 12, animSpeed, false));
-        animations.Add("aUp", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aUp, 12, animSpeed, false));
-        animations.Add("aDownAttack", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aDownAttack, 12, animSpeed/2, false));
-        animations.Add("aLeftAttack", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aLeftAttack, 12, animSpeed/2, false));
-        animations.Add("aRightAttack", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aRightAttack, 12, animSpeed/2, false));
-        animations.Add("aUpAttack", new Animation("Sprites/dungeon-pack-free_version/sprite/free_character_0.png", frameSize, aUpAttack, 12, animSpeed/2, false));
-        */
 
         //Set Next Animation
         animations["aDown"].next = animations["aDownStop"];
@@ -142,10 +103,12 @@ public class Player : Entity
         animRect.x += movement.X;
         hitBox.x += movement.X;
         attackBox.x += movement.X;
+        collisionBox.x += movement.X;
         CheckCollision("x");
         animRect.y += movement.Y;
         hitBox.y += movement.Y;
         attackBox.y += movement.Y;
+        collisionBox.y += movement.Y;
         CheckCollision("y");
 
         //Change Animation State
@@ -203,40 +166,33 @@ public class Player : Entity
     //Checks and enforces collision
     private void CheckCollision(string s)
     {
-        //Set points
-        collPoint1.X = hitBox.x;
-        collPoint1.Y = hitBox.y+hitBox.height;
-        collPoint2.X = hitBox.x+hitBox.width;
-        collPoint2.Y = hitBox.y+hitBox.height;
-        collPoint3.X = hitBox.x+(hitBox.width/2);
-        collPoint3.Y = hitBox.y+(hitBox.height*0.75f);
-
         //Check collision for every collision object
         foreach (Rectangle r in Map.collision)
         {
             //if colliding, move back
-            if (Raylib.CheckCollisionPointRec(collPoint1, r) || Raylib.CheckCollisionPointRec(collPoint2, r) || Raylib.CheckCollisionPointRec(collPoint3, r))
+            if (Raylib.CheckCollisionRecs(collisionBox,r))
             {
                 if (s == "x") 
                 {
                     animRect.x -= movement.X;
                     hitBox.x -= movement.X;
                     attackBox.x -= movement.X;
+                    collisionBox.x -= movement.X;
                 }
                 else if (s == "y")
                 {
                     animRect.y -= movement.Y;
                     hitBox.y -= movement.Y;
                     attackBox.y -= movement.Y;
+                    collisionBox.y -= movement.Y;
                 }
             }
         }
-        foreach (Item i in Controller.itemObjs)
+        foreach (ItemPickup i in Controller.itemPickups)
         {
-            if (Raylib.CheckCollisionPointRec(collPoint1, i.rect) || Raylib.CheckCollisionPointRec(collPoint2, i.rect) || Raylib.CheckCollisionPointRec(collPoint3, i.rect))
+            if (Raylib.CheckCollisionRecs(collisionBox,i.Rect))
             {
-                Controller.items.Add(i);
-                i.PickUp();
+                AddItem(i);
             }
         }
     }

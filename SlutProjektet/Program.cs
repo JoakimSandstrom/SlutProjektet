@@ -29,7 +29,7 @@ while(!Raylib.WindowShouldClose())
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.WHITE);
     map.Draw();
-    foreach (Item i in Controller.items)
+    foreach (ItemPickup i in Controller.itemPickups)
     {
         i.Draw();
     }

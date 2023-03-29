@@ -129,7 +129,7 @@ public class Enemy : Entity
         Dead = true;
         if (itemChance >= (float)(Controller.random.NextDouble()))
         {
-            Controller.SpawnItem(pos);
+            Controller.SpawnItem(pos,0);
         }
     }
 }
