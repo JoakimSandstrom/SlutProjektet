@@ -9,6 +9,8 @@ public class Player : Entity
     {
         //Set Player stats
         name = "player";
+        BaseHealth = 10;
+        Health = BaseHealth;
         BaseSpeed = 5f;
         Speed = BaseSpeed;
         Str = 1;
