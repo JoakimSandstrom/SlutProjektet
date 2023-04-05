@@ -19,8 +19,8 @@ public class Enemy : Entity
         animSpeed
         */
 
-        baseInvFrame = 0.5f;
-        InvFrame = baseInvFrame;
+        BaseInvFrame = 0.5f;
+        InvFrame = BaseInvFrame;
     }
     
     //This controlls the AI

@@ -20,7 +20,7 @@ public class Player : Entity
         baseAttackCD = animSpeed*3f;
         animationFile = "PlayerAnimations.json";
         spriteSheet = "Sprites/dungeon-pack-free_version/sprite/free_character_0.png";
-        baseInvFrame = 1f;
+        BaseInvFrame = 1f;
 
         //Set player rectangles to keep track of position, collistion and attacking
         animRect = new Rectangle(480, 480, 32*scale, 32*scale);
@@ -195,6 +195,9 @@ public class Player : Entity
             if (Raylib.CheckCollisionRecs(collisionBox,i.Rect))
             {
                 AddItem(i);
+                Controller.itemPickups.Remove(i);
+                Console.WriteLine("Picked up an Item!");
+                break;
             }
         }
     }

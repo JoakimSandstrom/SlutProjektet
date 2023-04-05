@@ -1,11 +1,12 @@
 public class Entity
 {
-    public string name = "bob";
+    protected string name = "bob";
 
     //Raylib variables
     protected Vector2 movement = new();
     protected int scale = Map.scale;
 
+    //List of items
     protected Dictionary<int,Item> items = new Dictionary<int,Item>();
 
 
@@ -16,15 +17,15 @@ public class Entity
     public Rectangle collisionBox;
 
     //Stats
-    public float Speed {get; set;}
+    public float Speed {get; protected set;}
     public float BaseSpeed {get; protected set;}
-    public int Health {get; set;}
+    public int Health {get; protected set;}
     public int BaseHealth {get; protected set;}
-    public int Str {get; set;}
+    public int Str {get; protected set;}
     public int BaseStr {get; protected set;}
-    public float InvFrame {get; set;} = 1f;
-    protected float baseInvFrame = 1f;
-    public bool Dead {get; set;} = false;
+    public float InvFrame {get; protected set;} = 1f;
+    public float BaseInvFrame {get; protected set;} = 1f;
+    public bool Dead {get; protected set;} = false;
 
     //Animation dictionary and variables
     protected Dictionary<string, Animation> animations = new();
@@ -45,12 +46,11 @@ public class Entity
         if (InvFrame <= 0)
         {
             Health -= damage;
-            InvFrame = baseInvFrame;
+            InvFrame = BaseInvFrame;
             Console.WriteLine(name+Health);
         }
         if (Health <= 0) Death();
     }
-
     public virtual void Update()
     {
 
