@@ -1,13 +1,16 @@
 public class Controller
 {
+    //Public Static Random to generate random numbers
     public static Random random = new Random();
 
-    //Timer
+    //Timer (public get, will be accessed by the HUD)
     public float GameTimer { get; private set; } = 0;
 
+    //Public Static Lists that multiple classes need access to
     public static List<Entity> entities = new();
     public static List<ItemPickup> itemPickups = new();
 
+    //Public Static variable to easily find the player in the entities list
     public static int playerIndex;
 
     //Create 1 Player and Enemy when constructed

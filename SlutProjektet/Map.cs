@@ -8,7 +8,7 @@ public class Map
 
     //List of collision rectangles
     public static List<Rectangle> collision = new();
-    //List of Object, contains all game objects
+    //List of Object, contains all game objects. Will be used instead of collision list
     public static List<Object> objects = new();
 
     //Add collision rectangles

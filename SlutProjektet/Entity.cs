@@ -4,7 +4,7 @@ public class Entity
 
     //Raylib variables
     protected Vector2 movement = new();
-    protected int scale = Map.scale;
+    protected static int scale = Map.scale;
 
     //List of items
     protected Dictionary<int,Item> items = new Dictionary<int,Item>();
@@ -40,7 +40,7 @@ public class Entity
 
     protected bool isMoving = false;
 
-    //Get hit if no invinsibility frames
+    //Take damage if no invinsibility frames
     public void GetHit(int damage)
     {
         if (InvFrame <= 0)
@@ -59,7 +59,7 @@ public class Entity
     {
 
     }
-    public void AnimationSerializer()
+    /*protected void AnimationSerializer()
     {
         var options = new JsonSerializerOptions
         {
@@ -72,9 +72,11 @@ public class Entity
         }
         string json = JsonSerializer.Serialize<Dictionary<string, List<int>>>(serializedAnimations, options);
         File.WriteAllText(animationFile, json);
-    }
-    public virtual void AnimationDeserializer(string animationFile, string spriteSheet, int frameSize,int columnWidth, float animSpeed, bool border)
+    }*/
+    //Deserializes animations from json file
+    protected virtual void AnimationDeserializer(string animationFile, string spriteSheet, int frameSize,int columnWidth, float animSpeed, bool border)
     {
+        //Json Options
         var options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -88,12 +90,14 @@ public class Entity
             animations.Add(v.Key, new Animation(spriteSheet, frameSize, v.Value, columnWidth, animSpeed, border));
         }
     }
-    public void AddItem(ItemPickup i)
+    //Adds item to list of instance and calls PickUp() for that item
+    protected void AddItem(ItemPickup i)
     {
         if (!items.ContainsKey(i.itemId)) items.Add(i.itemId,i.itemMaker[i.itemId]());
         items[i.itemId].PickUp();
     }
-    public virtual void Death()
+    //Called when Hp reaches zero
+    protected virtual void Death()
     {
 
     }

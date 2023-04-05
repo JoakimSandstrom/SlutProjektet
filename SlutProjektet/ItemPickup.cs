@@ -1,24 +1,27 @@
 public class ItemPickup : Object
 {
+    //Item id, same as the item class
     public int itemId {get; private set;}
-    public static List<string> itemTexturePaths = new();
+    
     static ItemPickup()
     {
+        //Deserialize list of itemTexturePaths once
         string jsonText = File.ReadAllText("ItemTextures.json");
-        itemTexturePaths = JsonSerializer.Deserialize<List<string>>(jsonText);
+        Item.itemTexturePaths = JsonSerializer.Deserialize<List<string>>(jsonText);
     }
     public ItemPickup(Vector2 pos,int itemId)
     {
-
+        //Variables
         Rect = new Rectangle(pos.X,pos.Y,16*scale,16*scale);
         this.pos = pos;
-
         this.itemId = itemId;
 
-        if (!itemTextures.ContainsKey(itemId)) itemTextures.Add(itemId,Raylib.LoadTexture(itemTexturePaths[itemId]));
-        texture = itemTextures[itemId];
+        //Add texture
+        if (!Item.itemTextures.ContainsKey(itemId)) Item.itemTextures.Add(itemId,Raylib.LoadTexture(Item.itemTexturePaths[itemId]));
+        texture = Item.itemTextures[itemId];
     }
 
+    //Return instance of different class based on index
     public Func<Item>[] itemMaker = 
     {
         () => new Heart()

@@ -19,7 +19,8 @@ public class SmallOrc : Enemy
         NewEnemy(x, y);
     }
 
-    public override void NewEnemy(float x, float y)
+    //This enemy doesn't have up and down animations
+    protected override void NewEnemy(float x, float y)
     {
         //Set Enemy rectangle to keep track of position and collision
         animRect = new Rectangle(x, y, frameSize*3, frameSize*3);
@@ -29,7 +30,6 @@ public class SmallOrc : Enemy
         AnimationDeserializer(animationFile,spriteSheet,frameSize,columnWidth,animSpeed,border);
 
         //Set Next Animation
-        //animations["aLeft"].next = animations["aLeftStop"];
         animations["aRight"].next = animations["aRightStop"];
         animations["aLeft"].next = animations["aLeftStop"];
 
@@ -37,7 +37,8 @@ public class SmallOrc : Enemy
         currentAnimation = animations["aRightStop"];
     }
     
-    public override void Direction()
+    //Slight change to acount for the fact that it only has animations for moving left and right
+    protected override void Direction()
     {
         //Calculate direction to move
         if (distance <= -48f)

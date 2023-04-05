@@ -46,7 +46,7 @@ public class Player : Entity
         //AnimationSerializer();
     }
 
-    //Every frame
+    //Called every frame
     public override void Update()
     {
         //Keep track of InvFrames
@@ -67,7 +67,8 @@ public class Player : Entity
         else if (!isAttacking) currentAnimation = currentAnimation.next;
     }
 
-    public bool Input()
+    //Handles input
+    private bool Input()
     {
         //Reset Vector2
         movement = Vector2.Zero;
@@ -85,7 +86,7 @@ public class Player : Entity
     }
 
     //Move Player
-    public void Movement()
+    private void Movement()
     {
         //Lower Speed if attacking
         Speed = BaseSpeed;
@@ -119,7 +120,7 @@ public class Player : Entity
     }
 
     //Move attack hitbox and deal damage
-    public void Attack()
+    private void Attack()
     {
         currentAnimation = animations[animIndex];
         isAttacking = true;
@@ -210,7 +211,7 @@ public class Player : Entity
     }
 
     //Json
-    public override void AnimationDeserializer(string animationFile, string spriteSheet, int frameSize,int columnWidth, float animSpeed, bool border)
+    protected override void AnimationDeserializer(string animationFile, string spriteSheet, int frameSize,int columnWidth, float animSpeed, bool border)
     {
         var options = new JsonSerializerOptions
         {

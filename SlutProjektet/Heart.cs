@@ -1,16 +1,25 @@
 public class Heart : Item
 {
+    //Variables
     private float hpIncrease = 25;
     private float hpAddition;
+
     static Heart()
     {
-        texture = Raylib.LoadTexture("Sprites/0x72/0x72_DungeonTilesetII_v1.4/frames/ui_heart_full.png");
-        Rarity = "common";
+        //Load texture once
+        if (!itemTextures.ContainsKey(0)) itemTextures.Add(0,Raylib.LoadTexture(itemTexturePaths[0]));
+    }
+    public Heart()
+    {
+        //Variables
         id = 0;
+        Rarity = "common";
+        texture = itemTextures[id];
     }
     public override void PickUp()
     {
         amount += 1;
+        //Increase HP
         hpAddition += amount*hpIncrease;
     }
 }

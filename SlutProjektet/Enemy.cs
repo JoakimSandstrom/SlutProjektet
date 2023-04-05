@@ -1,5 +1,6 @@
 public class Enemy : Entity
 {
+    //Variables
     protected float distance = 0;
     protected float timer = 0.48f;
 
@@ -61,9 +62,9 @@ public class Enemy : Entity
         }
     }
 
-    public virtual void Direction()
+    //Calculate direction to move
+    protected virtual void Direction()
     {
-        //Calculate direction to move
         if (distance <= -48f)
         {
             //Reset Vector2
@@ -102,7 +103,7 @@ public class Enemy : Entity
     }
     
     //Sets rectangles and fetcches animations
-    public virtual void NewEnemy(float x, float y)
+    protected virtual void NewEnemy(float x, float y)
     {
         //Set Enemy rectangle to keep track of position and collision
         animRect = new Rectangle(x, y, frameSize, frameSize);
@@ -121,7 +122,8 @@ public class Enemy : Entity
         currentAnimation = animations["aDownStop"];
     }
 
-    public override void Death()
+    //Drops item and sets "Dead" to true
+    protected override void Death()
     {
         Vector2 pos = new();
         pos.X = hitBox.x;
