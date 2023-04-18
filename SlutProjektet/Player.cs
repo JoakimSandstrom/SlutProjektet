@@ -206,7 +206,7 @@ public class Player : Entity
     //Draw to screen
     public override void Draw()
     {
-        Raylib.DrawRectangleRec(attackBox, Color.DARKBLUE);
+        //Raylib.DrawRectangleRec(attackBox, Color.DARKBLUE);
         currentAnimation.Draw(this);
     }
 

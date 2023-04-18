@@ -11,7 +11,7 @@ public class Object
 
     public virtual void Draw()
     {
-        Raylib.DrawRectangleRec(Rect, Color.DARKBLUE);
+        //Raylib.DrawRectangleRec(Rect, Color.DARKBLUE);
         Raylib.DrawTextureEx(texture,pos,0,scale,Color.WHITE);
     }
 }
