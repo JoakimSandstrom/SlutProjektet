@@ -94,8 +94,9 @@ public class Entity
     protected void AddItem(ItemPickup i)
     {
         if (!items.ContainsKey(i.itemId)) items.Add(i.itemId,i.itemMaker[i.itemId]());
-        items[i.itemId].PickUp();
+        items[i.itemId].PickUp(this);
     }
+
     //Called when Hp reaches zero
     protected virtual void Death()
     {

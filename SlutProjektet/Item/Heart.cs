@@ -16,10 +16,11 @@ public class Heart : Item
         Rarity = "common";
         texture = itemTextures[id];
     }
-    public override void PickUp()
+    public override void PickUp(Entity e)
     {
         amount += 1;
         //Increase HP
         hpAddition += amount*hpIncrease;
+        
     }
 }

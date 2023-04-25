@@ -18,7 +18,7 @@ public class Player : Entity
         border = false;
         columnWidth = 12;
         baseAttackCD = animSpeed*3f;
-        animationFile = "PlayerAnimations.json";
+        animationFile = "Json/PlayerAnimations.json";
         spriteSheet = "Sprites/dungeon-pack-free_version/sprite/free_character_0.png";
         BaseInvFrame = 1f;
 
@@ -43,7 +43,6 @@ public class Player : Entity
         //Set Starting Animation
         currentAnimation = animations["aDownStop"];
 
-        //AnimationSerializer();
     }
 
     //Called every frame

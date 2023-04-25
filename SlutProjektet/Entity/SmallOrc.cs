@@ -12,7 +12,7 @@ public class SmallOrc : Enemy
         columnWidth = 64;
         animSpeed = 0.06f;
         spriteSheet = "Sprites/0x72/dungeontiles-extended v1.1/dungeontileset-extended1.png";
-        animationFile = "SmallOrcAnimations.json";
+        animationFile = "Json/SmallOrcAnimations.json";
         distance = 48f;
         timer = 0.48f;
 

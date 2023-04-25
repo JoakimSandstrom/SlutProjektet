@@ -12,7 +12,7 @@ public class Slime : Enemy
         border = true;
         columnWidth = 12;
         spriteSheet = "Sprites/dungeon-pack-free_version/sprite/free_monsters_0.png";
-        animationFile = "SlimeAnimations.json";
+        animationFile = "Json/SlimeAnimations.json";
 
         NewEnemy(x, y);
     }

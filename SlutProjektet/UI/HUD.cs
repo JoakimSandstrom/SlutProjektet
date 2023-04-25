@@ -15,7 +15,8 @@ public class HUD : UI
     public static void Update(Player p)
     {
         //Finds out how much the healthbar needs to be squished
-        hpFactor = (float)p.Health/(float)p.BaseHealth;
+        if (p.Health > 0 ) hpFactor = (float)p.Health/(float)p.BaseHealth;
+        else hpFactor = 0;
     }
     public static void Draw()
     {

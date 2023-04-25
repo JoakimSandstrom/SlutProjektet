@@ -1,10 +1,10 @@
 public class Enemy : Entity
 {
     //Variables
-    protected float distance = 0;
-    protected float timer = 0.48f;
+    protected float distance = 0; //Distance to player
+    protected float timer = 0.48f; //Interval for movement
 
-    protected float itemChance = 1f;
+    protected float itemChance = 1f; //Chanche to drop item
 
     public Enemy()
     {

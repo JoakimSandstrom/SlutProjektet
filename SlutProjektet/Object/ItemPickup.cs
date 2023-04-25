@@ -6,7 +6,7 @@ public class ItemPickup : Object
     static ItemPickup()
     {
         //Deserialize list of itemTexturePaths once
-        string jsonText = File.ReadAllText("ItemTextures.json");
+        string jsonText = File.ReadAllText("Json/ItemTextures.json");
         Item.itemTexturePaths = JsonSerializer.Deserialize<List<string>>(jsonText);
     }
     public ItemPickup(Vector2 pos,int itemId)

@@ -14,7 +14,7 @@ public class Item
     protected int amount = 0;
 
     //Do something on pickup (increase stat...)
-    public virtual void PickUp()
+    public virtual void PickUp(Entity e)
     {
         
     }
