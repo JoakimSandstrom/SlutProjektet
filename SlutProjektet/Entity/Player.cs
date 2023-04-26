@@ -14,13 +14,16 @@ public class Player : Entity
         BaseSpeed = 5f;
         Speed = BaseSpeed;
         Str = 1;
+        baseAttackCD = animSpeed*3f;
+        BaseInvFrame = 1f;
+
+        //Sprite Variables
         frameSize = 32;
         border = false;
         columnWidth = 12;
-        baseAttackCD = animSpeed*3f;
         animationFile = "Json/PlayerAnimations.json";
         spriteSheet = "Sprites/dungeon-pack-free_version/sprite/free_character_0.png";
-        BaseInvFrame = 1f;
+        
 
         //Set player rectangles to keep track of position, collistion and attacking
         animRect = new Rectangle(480, 480, 32*scale, 32*scale);
