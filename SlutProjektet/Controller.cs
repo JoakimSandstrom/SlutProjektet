@@ -9,6 +9,7 @@ public class Controller
     //Public Static Lists that multiple classes need access to
     public static List<Entity> entities = new();
     public static List<ItemPickup> itemPickups = new();
+    public static Queue<Entity> enemyQueue = new();
 
     //Public Static variable to easily find the player in the entities list
     public static int playerIndex;
@@ -18,7 +19,18 @@ public class Controller
     {
         entities.Add(new Player());
         playerIndex = 0;
-        entities.Add(new Slime((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144));
+
+        for(int i = 0; i < 4; i++)
+        {
+            if(random.NextDouble() >= 0.5)
+            {
+                enemyQueue.Enqueue(new Slime((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144));
+            }
+            else enemyQueue.Enqueue(new SmallOrc((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144));
+        }
+
+        NextEnemy();
+        
     }
 
     //Keeps track of runtime and spawns enemy every 10 seconds
@@ -28,12 +40,22 @@ public class Controller
         //Spawn new enemies every 10 seconds at a random place
         if (GameTimer > 10f)
         {
-            entities.Add(new SmallOrc((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144));
+            NextEnemy();
             GameTimer = 0;
         }
     }
     public static void SpawnItem(Vector2 pos, int itemId)
     {
         itemPickups.Add(new ItemPickup(pos,itemId));
+    }
+    private void NextEnemy()
+    {
+        entities.Add(enemyQueue.Dequeue());
+
+        if(random.NextDouble() >= 0.5)
+        {
+            enemyQueue.Enqueue(new Slime((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144));
+        }
+        else enemyQueue.Enqueue(new SmallOrc((float)(random.NextDouble()*768)+96,(float)(random.NextDouble()*720)+144));
     }
 }
